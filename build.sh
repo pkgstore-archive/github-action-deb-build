@@ -118,7 +118,7 @@ pkg_src_move() {
 
   ${rm} -fv "${d_dst}"/*
   for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
-    ${mv} -fv "${d_src}"/"${i}" "${d_dst}" || exit 1
+    ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
 }
 
