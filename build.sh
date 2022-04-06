@@ -20,7 +20,7 @@ init() {
   # Apps.
   curl="$( command -v curl )"
   date="$( command -v date )"
-  debuild="$( command -v debuild )"
+  dpkg="$( command -v dpkg-source )"
   git="$( command -v git )"
   mv="$( command -v mv )"
   rm="$( command -v rm )"
@@ -103,8 +103,7 @@ pkg_src_build() {
   echo "--- [SYSTEM] BUILD: '${GIT_REPO_SRC#https://}'"
   _pushd "${d_src}/_build" || exit 1
 
-  #${debuild} -us -uc -i -d -S
-  dpkg-source -i -b .
+  ${dpkg} -i -b .
 
   _popd || exit 1
 }
@@ -117,6 +116,7 @@ pkg_src_move() {
   echo "--- [SYSTEM] MOVE: '${d_src}' -> '${d_dst}'"
 
   ${rm} -fv "${d_dst}"/*
+
   for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
