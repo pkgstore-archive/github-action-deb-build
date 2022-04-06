@@ -20,7 +20,7 @@ init() {
   # Apps.
   curl="$( command -v curl )"
   date="$( command -v date )"
-  dpkg="$( command -v dpkg-source )"
+  dpkg_source="$( command -v dpkg-source )"
   git="$( command -v git )"
   mv="$( command -v mv )"
   rm="$( command -v rm )"
@@ -35,6 +35,9 @@ init() {
   ${git} config --global user.name "${GIT_USER}"
   ${git} config --global user.email "${GIT_EMAIL}"
   ${git} config --global init.defaultBranch 'main'
+
+  # Commands.
+  cmd_src_build="${dpkg_source} -i -b ."
 
   # Run.
   git_clone           \
@@ -103,7 +106,7 @@ pkg_src_build() {
   echo "--- [SYSTEM] BUILD: '${GIT_REPO_SRC#https://}'"
   _pushd "${d_src}/_build" || exit 1
 
-  ${dpkg} -i -b .
+  ${cmd_src_build}
 
   _popd || exit 1
 }
