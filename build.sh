@@ -116,7 +116,7 @@ pkg_src_build() {
 pkg_src_move() {
   echo "--- [SYSTEM] MOVE: '${d_src}' -> '${d_dst}'"
 
-  for i in _service _meta README.md LICENSE *.tar.* *.dsc *.build *.buildinfo *.changes; do
+  for i in _service _meta README.md LICENSE *.tar.* *.dsc *.changes; do
     ${rm} -fv "${d_dst}"/${i}
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
