@@ -84,10 +84,10 @@ pkg_orig_pack() {
   # Check '*.orig.tar.*' file.
   local files=( '*.orig.tar.*' )
   for i in "${files[@]}"; do
-    if [[ -f "${i}" ]]; then
+    if [[ -f ${i} ]]; then
       echo "File '${i}' found!"
     else
-      echo "File '${files[1]}' not found! Creating..."
+      echo "File '*.orig.tar.*' not found! Creating..."
       SOURCE="${OBS_PACKAGE}-${PKG_VER}"
       TARGET="${OBS_PACKAGE}_${PKG_VER}.orig.tar.xz"
       ${tar} -cJf "${TARGET}" "${SOURCE}"
@@ -113,10 +113,10 @@ pkg_src_build() {
   # Check build status.
   local files=( '*.dsc' )
   for i in "${files[@]}"; do
-    if [[ -f "${i}" ]]; then
-      echo "File '${files[1]}' found!"
+    if [[ -f ${i} ]]; then
+      echo "File '${i}' found!"
     else
-      echo "File '${files[1]}' not found!"
+      echo "File '*.dsc' not found!"
       exit 1
     fi
     break
