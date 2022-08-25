@@ -130,7 +130,7 @@ pkg_src_move() {
   ${rm} -fv "${d_dst}"/*
 
   for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
-    if [[ -f ${i} ]]; then
+    if [[ -f "${d_src}"/${i} ]]; then
       ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
     else
       echo "--- [ERROR] File '${i}' not found!"
