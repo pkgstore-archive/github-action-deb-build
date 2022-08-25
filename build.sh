@@ -44,7 +44,7 @@ init() {
   # Run.
   git_clone           \
     && pkg_orig_pack  \
-    && pkg_src_build 2>&1 | ${tee} -a "${d_src}/build.log" \
+    && pkg_src_build 2>&1 | ${tee} "${d_src}/build.log" \
     && pkg_src_move   \
     && git_push       \
     && obs_upload     \
