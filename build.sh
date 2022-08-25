@@ -26,6 +26,7 @@ init() {
   rm="$( command -v rm )"
   sleep="$( command -v sleep )"
   tar="$( command -v tar )"
+  tee="$( command -v tee )"
   ts="$( _timestamp )"
 
   # Dirs.
@@ -43,7 +44,7 @@ init() {
   # Run.
   git_clone           \
     && pkg_orig_pack  \
-    && pkg_src_build  \
+    && pkg_src_build 2>&1 | ${tee} -a "${d_src}/build.log" \
     && pkg_src_move   \
     && git_push       \
     && obs_upload     \
@@ -138,7 +139,7 @@ pkg_src_move() {
 
   # Move new files from 'd_src' to 'd_dst'.
   echo "Moving new files to 'd_dst'..."
-  for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
+  for i in _service _meta README.md LICENSE *.tar.* *.dsc *.log; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
 }
