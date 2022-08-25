@@ -82,8 +82,7 @@ pkg_orig_pack() {
   for i in "${OBS_PACKAGE}-"*; do PKG_VER=${i##*-}; break; done;
 
   # Check '*.orig.tar.*' file.
-  local files=( '*.orig.tar.*' )
-  for i in "${files[@]}"; do
+  for i in *.orig.tar.*; do
     if [[ -f ${i} ]]; then
       echo "File '${i}' found!"
     else
@@ -109,19 +108,17 @@ pkg_src_build() {
 
   # Run build.
   ${cmd_src_build}
-  ls -1
 
-  # # Check build status.
-  # local files=( '*.dsc' )
-  # for i in "${files[@]}"; do
-  #   if [[ -f ${i} ]]; then
-  #     echo "File '${i}' found!"
-  #   else
-  #     echo "File '*.dsc' not found!"
-  #     exit 1
-  #   fi
-  #   break
-  # done
+  # Check build status.
+  for i in *.dsc; do
+    if [[ -f ${i} ]]; then
+      echo "File '${i}' found!"
+    else
+      echo "File '*.dsc' not found!"
+      exit 1
+    fi
+    break
+  done
 
   _popd || exit 1
 }
@@ -137,8 +134,7 @@ pkg_src_move() {
   ${rm} -fv "${d_dst}"/*
 
   # Move new files from 'd_src' to 'd_dst'.
-  local files=( '_service' '_meta' 'README.md' 'LICENSE' '*.tar.*' '*.dsc' )
-  for i in "${files[@]}"; do
+  for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
 }
