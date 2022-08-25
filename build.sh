@@ -77,20 +77,21 @@ pkg_orig_pack() {
   echo "--- [SYSTEM] PACK: '${OBS_PACKAGE}' (*.orig.tar.xz)"
   _pushd "${d_src}" || exit 1
 
+  # Set package version.
   PKG_VER="1.0.0"
+  for i in "${OBS_PACKAGE}-"*; do PKG_VER=${i##*-}; break; done;
 
-  for i in "${OBS_PACKAGE}-"*; do
-    PKG_VER=${i##*-}
-    break
-  done;
-
-  for i in *.orig.tar.*; do
-    if [[ ! -f "${i}" ]]; then
+  # Check '*.orig.tar.*' file.
+  local files=( '*.orig.tar.*' )
+  for i in "${files[@]}"; do
+    if [[ -f "${i}" ]]; then
+      echo "File '${i}' found!"
+    else
+      echo "File '${files[1]}' not found! Creating..."
       SOURCE="${OBS_PACKAGE}-${PKG_VER}"
       TARGET="${OBS_PACKAGE}_${PKG_VER}.orig.tar.xz"
       ${tar} -cJf "${TARGET}" "${SOURCE}"
-    else
-      echo "'${i}' exist!"
+      echo "File '${TARGET}' created!"
     fi
     break
   done
@@ -106,12 +107,16 @@ pkg_src_build() {
   echo "--- [SYSTEM] BUILD: '${GIT_REPO_SRC#https://}'"
   _pushd "${d_src}" || exit 1
 
+  # Run build.
   ${cmd_src_build}
 
   # Check build status.
-  for i in "${d_src}"/*.dsc; do
-    if [[ ! -f ${i} ]]; then
-      echo "File '${i}' not found!"
+  local files=( '*.dsc' )
+  for i in "${files[@]}"; do
+    if [[ -f "${i}" ]]; then
+      echo "File '${files[1]}' found!"
+    else
+      echo "File '${files[1]}' not found!"
       exit 1
     fi
     break
@@ -127,8 +132,10 @@ pkg_src_build() {
 pkg_src_move() {
   echo "--- [SYSTEM] MOVE: '${d_src}' -> '${d_dst}'"
 
+  # Remove old files from 'd_dst'.
   ${rm} -fv "${d_dst}"/*
 
+  # Move new files from 'd_src' to 'd_dst'.
   local files=( '_service' '_meta' 'README.md' 'LICENSE' '*.tar.*' '*.dsc' )
   for i in "${files[@]}"; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
