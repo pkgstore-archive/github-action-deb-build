@@ -37,7 +37,7 @@ init() {
   ${git} config --global init.defaultBranch 'main'
 
   # Commands.
-  cmd_src_build="${dpkg_source} -i -b ."
+  cmd_src_build="${dpkg_source} -b _build/"
 
   # Run.
   git_clone           \
@@ -104,12 +104,12 @@ pkg_orig_pack() {
 
 pkg_src_build() {
   echo "--- [SYSTEM] BUILD: '${GIT_REPO_SRC#https://}'"
-  _pushd "${d_src}/_build" || exit 1
+  _pushd "${d_src}" || exit 1
 
   ${cmd_src_build}
 
   # Check build status.
-  for i in *.dsc; do
+  for i in "${d_src}"/*.dsc; do
     if [[ ! -f ${i} ]]; then
       echo "--- [ERROR] File '${i}' not found!"
       exit 1
