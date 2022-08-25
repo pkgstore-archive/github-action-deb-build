@@ -109,18 +109,19 @@ pkg_src_build() {
 
   # Run build.
   ${cmd_src_build}
+  ls -1
 
-  # Check build status.
-  local files=( '*.dsc' )
-  for i in "${files[@]}"; do
-    if [[ -f ${i} ]]; then
-      echo "File '${i}' found!"
-    else
-      echo "File '*.dsc' not found!"
-      exit 1
-    fi
-    break
-  done
+  # # Check build status.
+  # local files=( '*.dsc' )
+  # for i in "${files[@]}"; do
+  #   if [[ -f ${i} ]]; then
+  #     echo "File '${i}' found!"
+  #   else
+  #     echo "File '*.dsc' not found!"
+  #     exit 1
+  #   fi
+  #   break
+  # done
 
   _popd || exit 1
 }
