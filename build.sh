@@ -42,12 +42,10 @@ init() {
   cmd_src_build="${dpkg_source} -i --build _build/"
 
   # Run.
-  git_clone           \
-    && pkg_orig_pack  \
-    && ( ( pkg_src_build ) 2>&1 ) | ${tee} "${d_src}/build.log" \
-    && pkg_src_move   \
-    && git_push       \
-    && obs_upload     \
+  git_clone \
+    && ( ( pkg_orig_pack && pkg_src_build && pkg_src_move ) 2>&1 ) | ${tee} "${d_src}/build.log" \
+    && git_push \
+    && obs_upload \
     && obs_trigger
 }
 
