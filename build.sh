@@ -37,7 +37,7 @@ init() {
   ${git} config --global init.defaultBranch 'main'
 
   # Commands.
-  cmd_src_build="${dpkg_source} -b _build/"
+  cmd_src_build="${dpkg_source} -i --build _build/"
 
   # Run.
   git_clone           \
@@ -111,7 +111,7 @@ pkg_src_build() {
   # Check build status.
   for i in "${d_src}"/*.dsc; do
     if [[ ! -f ${i} ]]; then
-      echo "--- [ERROR] File '${i}' not found!"
+      echo "File '${i}' not found!"
       exit 1
     fi
     break
@@ -129,13 +129,9 @@ pkg_src_move() {
 
   ${rm} -fv "${d_dst}"/*
 
-  for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
-    if [[ -f "${d_src}"/${i} ]]; then
-      ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
-    else
-      echo "--- [ERROR] File '${i}' not found!"
-      exit 1
-    fi
+  local files=( '_service' '_meta' 'README.md' 'LICENSE' '*.tar.*' '*.dsc' )
+  for i in "${files[@]}"; do
+    ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
 }
 
