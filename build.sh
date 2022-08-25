@@ -163,11 +163,15 @@ git_push() {
 # -------------------------------------------------------------------------------------------------------------------- #
 
 obs_upload() {
-  echo "--- [OBS] UPLOAD: '${OBS_PROJECT}/${OBS_PACKAGE}/_meta'"
+  echo "--- [OBS] UPLOAD: '${OBS_PROJECT}/${OBS_PACKAGE}'"
+
+  # Upload '_meta'.
+  echo "Uploading '${OBS_PROJECT}/${OBS_PACKAGE}/_meta'..."
   ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T \
     "${d_dst}/_meta" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_meta"
 
-  echo "--- [OBS] UPLOAD: '${OBS_PROJECT}/${OBS_PACKAGE}/_service'"
+  # Upload '_service'.
+  echo "Uploading '${OBS_PROJECT}/${OBS_PACKAGE}/_service'..."
   ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T \
     "${d_dst}/_service" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_service"
 
