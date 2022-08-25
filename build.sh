@@ -26,6 +26,7 @@ init() {
   rm="$( command -v rm )"
   sleep="$( command -v sleep )"
   tar="$( command -v tar )"
+  ts="$( _timestamp )"
 
   # Dirs.
   d_src="/root/git/repo_src"
@@ -113,6 +114,7 @@ pkg_src_build() {
   for i in *.dsc; do
     if [[ -f ${i} ]]; then
       echo "File '${i}' found!"
+      echo "Build completed!"
     else
       echo "File '*.dsc' not found!"
       exit 1
@@ -131,9 +133,11 @@ pkg_src_move() {
   echo "--- [SYSTEM] MOVE: '${d_src}' -> '${d_dst}'"
 
   # Remove old files from 'd_dst'.
+  echo "Removing old files from 'd_dst'..."
   ${rm} -fv "${d_dst}"/*
 
   # Move new files from 'd_src' to 'd_dst'.
+  echo "Moving new files to 'd_dst'..."
   for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
@@ -147,7 +151,8 @@ git_push() {
   echo "--- [GIT] PUSH: '${d_dst}' -> '${GIT_REPO_DST#https://}'"
   _pushd "${d_dst}" || exit 1
 
-  ts="$( _timestamp )"
+  # Commit build files & push.
+  echo "Commit build files & push..."
   ${git} add . && ${git} commit -a -m "BUILD: ${ts}" && ${git} push
 
   _popd || exit 1
@@ -159,10 +164,12 @@ git_push() {
 
 obs_upload() {
   echo "--- [OBS] UPLOAD: '${OBS_PROJECT}/${OBS_PACKAGE}/_meta'"
-  ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T "${d_dst}/_meta" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_meta"
+  ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T \
+    "${d_dst}/_meta" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_meta"
 
   echo "--- [OBS] UPLOAD: '${OBS_PROJECT}/${OBS_PACKAGE}/_service'"
-  ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T "${d_dst}/_service" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_service"
+  ${curl} -u "${OBS_USER}":"${OBS_PASSWORD}" -X PUT -T \
+    "${d_dst}/_service" "https://api.opensuse.org/source/${OBS_PROJECT}/${OBS_PACKAGE}/_service"
 
   ${sleep} 5
 }
@@ -173,7 +180,8 @@ obs_upload() {
 
 obs_trigger() {
   echo "--- [OBS] TRIGGER: '${OBS_PROJECT}/${OBS_PACKAGE}'"
-  ${curl} -H "Authorization: Token ${OBS_TOKEN}" -X POST "https://api.opensuse.org/trigger/runservice?project=${OBS_PROJECT}&package=${OBS_PACKAGE}"
+  ${curl} -H "Authorization: Token ${OBS_TOKEN}" -X POST \
+    "https://api.opensuse.org/trigger/runservice?project=${OBS_PROJECT}&package=${OBS_PACKAGE}"
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
