@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # INITIALIZATION.
@@ -108,6 +108,15 @@ pkg_src_build() {
 
   ${cmd_src_build}
 
+  # Check build status.
+  for i in *.dsc; do
+    if [[ ! -f ${i} ]]; then
+      echo "--- [ERROR] File '${i}' not found!"
+      exit 1
+    fi
+    break
+  done
+
   _popd || exit 1
 }
 
@@ -121,7 +130,12 @@ pkg_src_move() {
   ${rm} -fv "${d_dst}"/*
 
   for i in _service _meta README.md LICENSE *.tar.* *.dsc; do
-    ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
+    if [[ -f ${i} ]]; then
+      ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
+    else
+      echo "--- [ERROR] File '${i}' not found!"
+      exit 1
+    fi
   done
 }
 
