@@ -132,11 +132,11 @@ pkg_src_move() {
   echo "--- [SYSTEM] MOVE: '${d_src}' -> '${d_dst}'"
 
   # Remove old files from 'd_dst'.
-  echo "Removing old files from 'd_dst'..."
+  echo "Removing old files from repository..."
   ${rm} -fv "${d_dst}"/*
 
   # Move new files from 'd_src' to 'd_dst'.
-  echo "Moving new files to 'd_dst'..."
+  echo "Moving new files to repository..."
   for i in _service _meta README.md LICENSE *.tar.* *.dsc *.log; do
     ${mv} -fv "${d_src}"/${i} "${d_dst}" || exit 1
   done
